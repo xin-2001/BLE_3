@@ -9,20 +9,43 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.noahliu.ble_example.Module.Adapter.ExpandableListAdapter;
 import com.noahliu.ble_example.Module.Enitiy.ScannedData;
 import com.noahliu.ble_example.Module.Enitiy.ServiceInfo;
 import com.noahliu.ble_example.Module.Service.BluetoothLeService;
 import com.noahliu.ble_example.R;
+import com.noahliu.ble_example.Result_Activity;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceInfoActivity extends AppCompatActivity implements ExpandableListAdapter.OnChildClick {
@@ -33,6 +56,12 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
     private TextView tvAddress, tvStatus, tvRespond;
     private ExpandableListAdapter expandableListAdapter;
     private boolean isLedOn = false;
+    private float MAX,MIN,AVG,SUM,COUNT;
+    private Button End;
+
+    private boolean isRunning = false;
+    private LineChart chart;
+    private Thread thread;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,8 +71,171 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         initBLE();
         initUI();
 
+        MAX=0;
+        MIN=15;
+        AVG=0;
+        SUM=0;
+        COUNT=1;
+        End=findViewById(R.id.button_End);
+        End.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AVG=SUM/COUNT;
+                tvRespond.append("最大值:"+MAX+"\n");
+                tvRespond.append("最小值:"+MIN+"\n");
+                tvRespond.append("平均值:"+AVG+"\n");
+                /*Intent i=new Intent(DeviceInfoActivity.this, Result_Activity.class);
+                i.putExtra("MAX",MAX);
+                i.putExtra("MIN",MIN);
+                i.putExtra("AVG",AVG);
+                startActivity(i);*/
+            }
+        });
+
+        chart = findViewById(R.id.lineChart);
+        /**載入圖表*/
+        initChart();
+        startRun("0");
+
+    }
+    /*----------------------graph-----------------*/
+
+    /**
+     * 開始跑圖表
+     */
+
+    private void startRun(String data) {
+        if (isRunning) return;
+        if (thread != null) thread.interrupt();
+//            Runnable runnable = new Runnable() {@Override public void run() {}};
+        //簡略寫法
+        isRunning = true;
+        Runnable runnable = () -> {
+            //取亂數
+            //addData(Integer.valueOf(data).intValue());
+
+        };
+//            thread = new Thread(new Runnable()
+//            {@Override public void run() {runOnUiThread(runnable);}});
+        //簡略寫法
+        thread = new Thread(() -> {
+            while (isRunning) {
+                runOnUiThread(runnable);
+                if (!isRunning) break;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
 
+    /**
+     * 載入圖表
+     */
+    private void initChart() {
+        chart.getDescription().setEnabled(false);//設置不要圖表標籤
+        chart.setTouchEnabled(true);//設置不可觸碰
+        chart.setDragEnabled(true);//設置不可互動
+        //設置單一線數據
+        LineData data = new LineData();
+        data.setValueTextColor(Color.BLACK);
+        chart.setData(data);
+        //設置左下角標籤
+        Legend l = chart.getLegend();
+        l.setForm(Legend.LegendForm.LINE);
+        l.setTextColor(Color.BLACK);
+
+        //設置Ｘ軸
+        XAxis x = chart.getXAxis();
+        x.setTextColor(Color.BLACK);
+        x.setDrawGridLines(true);//畫X軸線
+        x.setPosition(XAxis.XAxisPosition.BOTTOM);//把標籤放底部
+        x.setLabelCount(20, true);//設置顯示15個標籤
+        //設置X軸標籤內容物
+        x.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return "" + Math.round(value);
+            }
+        });
+        //
+        YAxis y = chart.getAxisLeft();
+        y.setTextColor(Color.BLACK);
+        y.setDrawGridLines(true);
+        y.setAxisMaximum(20);//最高
+        y.setAxisMinimum(0);//最低0
+        chart.getAxisRight().setEnabled(false);//右邊Y軸不可視
+        chart.setVisibleXRange(1, 50);//設置顯示範圍
+    }
+
+    /**
+     * 新增資料
+     */
+    private void addData(float inputData) {
+        LineData data = chart.getData();//取得原數據
+        ILineDataSet set = data.getDataSetByIndex(0);//取得曲線(因為只有一條，故為0，若有多條則需指定)
+        if (set == null) {
+            set = createSet();
+            data.addDataSet(set);//如果是第一次跑則需要載入數據
+        }
+        data.addEntry(new Entry(set.getEntryCount(), inputData), 0);//新增數據點
+        //
+        data.notifyDataChanged();
+        chart.notifyDataSetChanged();
+        chart.setVisibleXRange(0, 20);//設置可見範圍
+        chart.moveViewToX(data.getEntryCount());//將可視焦點放在最新一個數據，使圖表可移動
+    }
+
+    /**
+     * 設置數據線的樣式
+     */
+    private LineDataSet createSet() {
+        LineDataSet set = new LineDataSet(null, "次數");
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set.setColor(Color.GRAY);
+        set.setLineWidth(2);
+        set.setDrawCircles(false);
+        set.setFillColor(Color.RED);
+        set.setFillAlpha(50);
+        set.setDrawFilled(true);
+        set.setValueTextColor(Color.BLACK);
+        set.setDrawValues(false);
+        return set;
+    }
+/*
+    public static void initBarChart(BarChart chart, List<BarEntry> entries, String title, @ColorInt int barColor) {
+        BarDataSet set1 = new BarDataSet(entries, title);
+        set1.setValueTextColor(Color.WHITE);
+        set1.setColor(barColor);
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set1);
+
+        BarData data = new BarData(dataSets);
+        data.setValueTextSize(10f);
+        // 設定bar的寬度，但是點很多少的時候好像沒作用，會拉得很寬
+        data.setBarWidth(0.1f);
+        // 設定value值 顏色
+        data.setValueTextColor(Color.WHITE);
+        //設定y軸顯示的標籤
+        data.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return ((int) (value * 100)) + "%";
+            }
+        });
+
+
+        chart.setData(data);
+        chart.invalidate();
+    }
+*/
+
+
+
+    /*----------------------------------------------*/
     /**
      * 初始化藍芽
      */
@@ -133,12 +325,27 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
                         + "byte[]: " + BluetoothLeService.byteArrayToHexStr(getByteData));
                 /*tvRespond.append("String: "+stringData+"\n"
                         +"byte[]: "+BluetoothLeService.byteArrayToHexStr(getByteData)+"\n");*/
-                tvRespond.append("String: " + stringData + "\n"
-                        + "byte[]: " + BluetoothLeService.byteArrayToHexStr(getByteData) + "\n");
+                tvRespond.append("\n"+/*"String: " +*/ stringData
+                        /*+ "byte[]: " + BluetoothLeService.byteArrayToHexStr(getByteData) + "\n"*/);
                 isLedOn = getByteData.equals("486173206F6E");
                 //isLedOn = BluetoothLeService.byteArrayToHexStr(getByteData).equals("486173206F6E");
 
 
+                float test = 0;
+                try{
+                    test = Float.parseFloat(stringData);
+                }catch(NumberFormatException e){
+                    System.out.println("浮點數轉換錯誤");
+                }
+                if(MAX<test) {
+                    MAX=test;
+                }
+                if(test<MIN){
+                    MIN=test;
+                }
+                SUM=SUM+test;
+                COUNT++;
+                addData(test);
             }
         }
     };//onReceive
@@ -186,29 +393,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         mBluetoothLeService.sendValue(led, info.getCharacteristic());
     }
 
-    public static String byteToHex(byte b) {
-        int i = b & 0xFF;
-        return Integer.toHexString(i);
-    }
 
-    public static int byte2int(byte[] res) {
-// res = InversionByte(res);
-// 一個byte資料左移24位變成0x??000000，再右移8位變成0x00??0000
-        int targets = (res[0] & 0xff) | ((res[1] << 8) & 0xff00); // | 表示安位或
-        return targets;
-    }
 
-    public static float[] ByteArrayToFloatArray(byte[] data) {
-        float[] result = new float[data.length / 4];
-        int temp = 0;
-        for (int i = 0; i < data.length; i += 4) {
-            temp = temp | (data[i] & 0xff) << 0;
-            temp = temp | (data[i+1] & 0xff) << 8;
-            temp = temp | (data[i+2] & 0xff) << 16;
-            temp = temp | (data[i+3] & 0xff) << 24;
-            result[i / 4] = Float.intBitsToFloat(temp);
-        }
-        return result;
-    }
+
 }
-//a b 1 5 空

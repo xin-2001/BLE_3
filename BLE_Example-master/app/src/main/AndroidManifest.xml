@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.noahliu.ble_example" >
+    package="com.noahliu.ble_example">
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -17,9 +17,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".Result_Activity"
+            android:exported="true" />
         <activity android:name=".Controller.DeviceInfoActivity" />
-        <activity android:name=".Controller.MainActivity" >
+        <activity android:name=".Controller.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
