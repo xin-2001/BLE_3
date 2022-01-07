@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.noahliu.ble_example.Module.Adapter.RecyclerViewAdapter;
 import com.noahliu.ble_example.Module.Enitiy.ScannedData;
 import com.noahliu.ble_example.R;
+import com.noahliu.ble_example.Result_Activity;
 
 
 import java.util.ArrayList;
@@ -195,7 +196,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onItemClick(ScannedData selectedDevice) {
 
-            Intent intent = new Intent(MainActivity.this, DeviceInfoActivity.class);
+            //Intent intent = new Intent(MainActivity.this, Result_Activity.class);
+            //Intent intent = new Intent(MainActivity.this, DeviceInfoActivity.class);
+            Intent intent = new Intent(MainActivity.this, Login_Activity.class);
             intent.putExtra(DeviceInfoActivity.INTENT_KEY,selectedDevice);
             startActivity(intent);
         }

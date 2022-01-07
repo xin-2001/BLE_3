@@ -1,5 +1,7 @@
 package com.noahliu.ble_example.Controller;
 
+import static android.graphics.Color.rgb;
+
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -53,7 +55,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
     public static final String INTENT_KEY = "GET_DEVICE";
     private BluetoothLeService mBluetoothLeService;
     private ScannedData selectedDevice;
-    private TextView tvAddress, tvStatus, tvRespond;
+    private TextView tvAddress, tvStatus, tvRespond,Text_now,Text_max,Text_avg;
     private ExpandableListAdapter expandableListAdapter;
     private boolean isLedOn = false;
     private float MAX,MIN,AVG,SUM,COUNT;
@@ -62,6 +64,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
     private boolean isRunning = false;
     private LineChart chart;
     private Thread thread;
+    private String AVGG,Maxx;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,15 +83,10 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         End.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AVG=SUM/COUNT;
-                tvRespond.append("最大值:"+MAX+"\n");
-                tvRespond.append("最小值:"+MIN+"\n");
-                tvRespond.append("平均值:"+AVG+"\n");
-                /*Intent i=new Intent(DeviceInfoActivity.this, Result_Activity.class);
-                i.putExtra("MAX",MAX);
-                i.putExtra("MIN",MIN);
-                i.putExtra("AVG",AVG);
-                startActivity(i);*/
+                Intent i=new Intent(DeviceInfoActivity.this,Result_Activity.class);
+                i.putExtra("AVG",AVGG);
+                i.putExtra("MAX",Maxx);
+                startActivity(i);
             }
         });
 
@@ -150,10 +148,10 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
 
         //設置Ｘ軸
         XAxis x = chart.getXAxis();
-        x.setTextColor(Color.BLACK);
+        x.setTextColor(Color.GRAY);
         x.setDrawGridLines(true);//畫X軸線
         x.setPosition(XAxis.XAxisPosition.BOTTOM);//把標籤放底部
-        x.setLabelCount(20, true);//設置顯示15個標籤
+        x.setLabelCount(21, true);//設置顯示15個標籤
         //設置X軸標籤內容物
         x.setValueFormatter(new ValueFormatter() {
             @Override
@@ -163,12 +161,12 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         });
         //
         YAxis y = chart.getAxisLeft();
-        y.setTextColor(Color.BLACK);
+        y.setTextColor(Color.GRAY);
         y.setDrawGridLines(true);
         y.setAxisMaximum(20);//最高
         y.setAxisMinimum(0);//最低0
         chart.getAxisRight().setEnabled(false);//右邊Y軸不可視
-        chart.setVisibleXRange(1, 50);//設置顯示範圍
+        chart.setVisibleXRange(0, 20);//設置顯示範圍
     }
 
     /**
@@ -182,7 +180,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
             data.addDataSet(set);//如果是第一次跑則需要載入數據
         }
         data.addEntry(new Entry(set.getEntryCount(), inputData), 0);//新增數據點
-        //
+                                                                                            //---entry->barentry
         data.notifyDataChanged();
         chart.notifyDataSetChanged();
         chart.setVisibleXRange(0, 20);//設置可見範圍
@@ -195,13 +193,13 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
     private LineDataSet createSet() {
         LineDataSet set = new LineDataSet(null, "次數");
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setColor(Color.GRAY);
+        set.setColor(rgb(0,100,255));
         set.setLineWidth(2);
         set.setDrawCircles(false);
-        set.setFillColor(Color.RED);
-        set.setFillAlpha(50);
+        set.setFillColor(rgb(20,20,20));
+        set.setFillAlpha(80);  //透明度
         set.setDrawFilled(true);
-        set.setValueTextColor(Color.BLACK);
+        set.setValueTextColor(Color.GRAY);
         set.setDrawValues(false);
         return set;
     }
@@ -252,7 +250,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);//從服務中接受(收)數據
 
         registerReceiver(mGattUpdateReceiver, intentFilter);
-        if (mBluetoothLeService != null) mBluetoothLeService.connect(selectedDevice.getAddress());
+        if (mBluetoothLeService != null) mBluetoothLeService.connect(selectedDevice.getAddress());  //---BT connect
     }
 
     /**
@@ -265,11 +263,16 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         expandableListView.setAdapter(expandableListAdapter);
         tvAddress = findViewById(R.id.device_address);
         tvStatus = findViewById(R.id.connection_state);
-        tvRespond = findViewById(R.id.data_value);
+        //tvRespond = findViewById(R.id.data_value);
+        Text_now=findViewById(R.id.now_text);
+        Text_max=findViewById(R.id.max_text);
+        Text_avg=findViewById(R.id.avg_text);
         tvAddress.setText(selectedDevice.getAddress());
-        tvStatus.setText("未連線");
-        tvRespond.setText("---");
-        tvRespond.setMovementMethod(new ScrollingMovementMethod());
+        //tvStatus.setText("未連線");
+        tvAddress.setBackgroundColor(rgb(255,0,0));
+        //tvRespond.setText("---");
+
+        //tvRespond.setMovementMethod(new ScrollingMovementMethod());
     }
 
     /**
@@ -282,7 +285,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
             if (!mBluetoothLeService.initialize()) {
                 finish();
             }
-            mBluetoothLeService.connect(selectedDevice.getAddress());
+            mBluetoothLeService.connect(selectedDevice.getAddress());  //-------------------BT connect
         }
 
         @Override
@@ -298,7 +301,8 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
             /**如果有連接*/
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 Log.d(TAG, "藍芽已連線");
-                tvStatus.setText("已連線");
+                //tvStatus.setText("已連線");
+                tvAddress.setBackgroundColor(rgb(0,255,0));
 
             }
             /**如果沒有連接*/
@@ -325,25 +329,35 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
                         + "byte[]: " + BluetoothLeService.byteArrayToHexStr(getByteData));
                 /*tvRespond.append("String: "+stringData+"\n"
                         +"byte[]: "+BluetoothLeService.byteArrayToHexStr(getByteData)+"\n");*/
-                tvRespond.append("\n"+/*"String: " +*/ stringData
-                        /*+ "byte[]: " + BluetoothLeService.byteArrayToHexStr(getByteData) + "\n"*/);
+                //tvRespond.append("\n"+/*"String: " +*/ stringData
+                        /*+ "byte[]: " + BluetoothLeService.byteArrayToHexStr(getByteData) + "\n"*///);
                 isLedOn = getByteData.equals("486173206F6E");
                 //isLedOn = BluetoothLeService.byteArrayToHexStr(getByteData).equals("486173206F6E");
 
-
+                float avgg=0;
+                int to_int;
                 float test = 0;
                 try{
                     test = Float.parseFloat(stringData);
+                    Text_now.setText(stringData);
                 }catch(NumberFormatException e){
                     System.out.println("浮點數轉換錯誤");
                 }
                 if(MAX<test) {
                     MAX=test;
+                    Text_max.setText(stringData);
+                    Maxx=stringData;
                 }
                 if(test<MIN){
                     MIN=test;
                 }
                 SUM=SUM+test;
+                avgg=(SUM/COUNT)*1000;
+                to_int= (int) (avgg);
+                avgg=to_int;
+                avgg=avgg/1000;
+                AVGG= String.valueOf(avgg);
+                Text_avg.setText(AVGG);
                 COUNT++;
                 addData(test);
             }
@@ -392,8 +406,6 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         if (!isLedOn) led = "on";
         mBluetoothLeService.sendValue(led, info.getCharacteristic());
     }
-
-
 
 
 }

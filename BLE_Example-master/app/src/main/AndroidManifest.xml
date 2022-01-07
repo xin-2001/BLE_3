@@ -19,10 +19,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Result_Activity"
+            android:name=".Controller.Login_Activity"
             android:exported="true" />
-        <activity android:name=".Controller.DeviceInfoActivity" />
-        <activity android:name=".Controller.MainActivity">
+        <activity
+            android:name=".Result_Activity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Controller.DeviceInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Controller.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
