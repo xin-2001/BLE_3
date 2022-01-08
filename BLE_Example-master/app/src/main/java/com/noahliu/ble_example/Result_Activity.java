@@ -27,7 +27,7 @@ public class Result_Activity extends AppCompatActivity {
     private EditText name;
     private Button save;
     private String Name_text;
-    private String Max,Avg;
+    private String Max,Avg,user_name;
     private SQLiteDatabase db;
     private Database _DB;
     private ListView list;
@@ -51,17 +51,18 @@ public class Result_Activity extends AppCompatActivity {
         Intent i=getIntent();
         Max=i.getStringExtra("MAX");
         Avg=i.getStringExtra("AVG");
+        user_name=i.getStringExtra("user_name");
         //max.setText("Max:"+Max);
         //avg.setText("Avg:"+Avg);
-        max.setText(" ");
-        avg.setText(" ");
+        max.setText("MAX："+Max);
+        avg.setText("AVG："+Avg);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Name_text=name.getText().toString();
+                //Name_text=name.getText().toString();
                 ContentValues cv=new ContentValues();
                 //cv.put("_id",1);
-                cv.put("_name",Name_text);
+                cv.put("_name",user_name);
                 cv.put("_max",Max);
                 cv.put("_avg",Avg);
                 db.insert("TB1",null,cv);

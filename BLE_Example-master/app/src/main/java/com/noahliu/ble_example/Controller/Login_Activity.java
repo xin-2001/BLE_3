@@ -23,7 +23,7 @@ public class Login_Activity extends AppCompatActivity {
     private EditText account;
     private EditText password;
     private SQLiteDatabase SQL_db;
-    private Database _DB;
+    private Login_Database _DB;
     private TextView account_err;
     private TextView password_err;
     private TextView check_pass_err;
@@ -51,14 +51,20 @@ public class Login_Activity extends AppCompatActivity {
         password_err=findViewById(R.id.password_error);
         check_pass_err=findViewById(R.id.check_pass_error);
 
+        _DB=new Login_Database(this);
+        SQL_db=_DB.getWritableDatabase();
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(reg==0) {
-                    check_pass_edit.setVisibility(View.VISIBLE);
+                    check_pass_text.setVisibility(View.VISIBLE);
                     check_pass_edit.setVisibility(View.VISIBLE);
                     login.setVisibility(View.INVISIBLE);
                     back_button.setVisibility(View.VISIBLE);
+                    account_err.setText("");
+                    password_err.setText("");
+                    check_pass_err.setText("");
                     reg++;
                 }else{
                     user=account.getText().toString();
@@ -85,10 +91,13 @@ public class Login_Activity extends AppCompatActivity {
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                check_pass_edit.setVisibility(View.INVISIBLE);
+                check_pass_text.setVisibility(View.INVISIBLE);
                 check_pass_edit.setVisibility(View.INVISIBLE);
                 login.setVisibility(View.VISIBLE);
                 back_button.setVisibility(View.INVISIBLE);
+                account_err.setText("");
+                password_err.setText("");
+                check_pass_err.setText("");
                 reg=0;
             }
         });
@@ -97,17 +106,22 @@ public class Login_Activity extends AppCompatActivity {
             public void onClick(View view) {
                 user=account.getText().toString();
                 pass=password.getText().toString();
-                if(user==""){
+                if(user.matches("")||user==null){
                     account_err.setText("請輸入帳號");
+                }else{
+                    account_err.setText("");
                 }
-                if(pass==""){
-                    password.setText("請輸入密碼");
+                if(pass.matches("")||pass==null){
+                    password_err.setText("請輸入密碼");
+                }else{
+                    password_err.setText("");
                 }
-                if(user!=""&&pass!=""){
+                if(!user.matches("")&&!pass.matches("")){
                     //確認user是否註冊過
                       //確認pass是否正確
                     Intent i=new Intent(Login_Activity.this,DeviceInfoActivity.class);
                     i.putExtra(DeviceInfoActivity.INTENT_KEY,selectedDevice);
+                    i.putExtra("user_name",user);
                     startActivity(i);
                 }
 

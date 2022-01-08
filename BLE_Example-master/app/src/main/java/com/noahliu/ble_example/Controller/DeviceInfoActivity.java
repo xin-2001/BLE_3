@@ -66,6 +66,8 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
     private Thread thread;
     private String AVGG,Maxx;
 
+    private String user_name;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,10 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         selectedDevice = (ScannedData) getIntent().getSerializableExtra(INTENT_KEY);
         initBLE();
         initUI();
+
+        Intent i=getIntent();
+        user_name=i.getStringExtra("user_name");
+
 
         MAX=0;
         MIN=15;
@@ -86,6 +92,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
                 Intent i=new Intent(DeviceInfoActivity.this,Result_Activity.class);
                 i.putExtra("AVG",AVGG);
                 i.putExtra("MAX",Maxx);
+                i.putExtra("user_name",user_name);
                 startActivity(i);
             }
         });
@@ -364,8 +371,8 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         }
     };//onReceive
 
-    /**
-     * 將藍芽所有資訊顯示在Logcat
+    /*
+      將藍芽所有資訊顯示在Logcat
      */
     private void displayGattAtLogCat(List<BluetoothGattService> gattList) {
         for (BluetoothGattService service : gattList) {
@@ -380,8 +387,8 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         }
     }
 
-    /**
-     * 關閉藍芽
+    /*
+      關閉藍芽
      */
     private void closeBluetooth() {
         if (mBluetoothLeService == null) return;
@@ -397,8 +404,8 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         closeBluetooth();
     }
 
-    /**
-     * 點擊物件，即寫資訊給藍芽(或直接讀藍芽裝置資訊)
+    /*
+      點擊物件，即寫資訊給藍芽(或直接讀藍芽裝置資訊)
      */
     @Override
     public void onChildClick(ServiceInfo.CharacteristicInfo info) {
