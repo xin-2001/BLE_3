@@ -8,14 +8,20 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ACER/Desktop/BLE/BLE_3/BLE_Example-master/app/src/main/res/layout/activity_device_control.xml" value="0.187109375" />
+        <entry key="..\:/Users/ACER/Desktop/BLE/BLE_3/BLE_Example-master/app/src/main/res/layout/activity_history.xml" value="0.187109375" />
+        <entry key="..\:/Users/ACER/Desktop/BLE/BLE_3/BLE_Example-master/app/src/main/res/layout/activity_login.xml" value="0.264" />
+        <entry key="..\:/Users/ACER/Desktop/BLE/BLE_3/BLE_Example-master/app/src/main/res/layout/activity_main.xml" value="0.187109375" />
+        <entry key="..\:/Users/ACER/Desktop/BLE/BLE_3/BLE_Example-master/app/src/main/res/layout/activity_result.xml" value="0.187109375" />
+        <entry key="..\:/Users/ACER/Desktop/BLE/BLE_3/BLE_Example-master/app/src/main/res/layout/activity_user.xml" value="0.187109375" />
         <entry key="..\:/Users/ACER/Desktop/BLE_Example-master/BLE_Example-master/app/src/main/res/layout/activity_device_control.xml" value="0.264" />
         <entry key="..\:/Users/ACER/Desktop/BLE_Example-master/BLE_Example-master/app/src/main/res/layout/activity_main.xml" value="0.14266304347826086" />
         <entry key="..\:/Users/ACER/Desktop/BLE_Example-master/BLE_Example-master/app/src/main/res/layout/activity_result.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/ACER/Desktop/BLE_Example-master/BLE_Example-master/app/src/main/res/layout/activity_test2_ble.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/ACER/Desktop/BLE_test2/BLE_Example-master/app/src/main/res/layout/activity_device_control.xml" value="0.2" />
         <entry key="..\:/Users/ACER/Desktop/BLE_test2/BLE_Example-master/app/src/main/res/layout/activity_login.xml" value="0.2" />
-        <entry key="..\:/Users/ACER/Desktop/BLE_test2/BLE_Example-master/app/src/main/res/layout/activity_main.xml" value="0.12284701114488349" />
-        <entry key="..\:/Users/ACER/Desktop/BLE_test2/BLE_Example-master/app/src/main/res/layout/activity_result.xml" value="0.264" />
+        <entry key="..\:/Users/ACER/Desktop/BLE_test2/BLE_Example-master/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/ACER/Desktop/BLE_test2/BLE_Example-master/app/src/main/res/layout/activity_result.xml" value="0.2" />
       </map>
     </option>
   </component>

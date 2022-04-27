@@ -23,12 +23,22 @@ public class Login_Database extends SQLiteOpenHelper{
         db.execSQL("CREATE TABLE IF NOT EXISTS "+TB_name+
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT " +
                 ",_name VARCHAR(20)" +
-                ",_password VARCHAR(20))");
+                ",_number VARCHAR(20)"+
+                ",_gender VARHAR(20)"+
+                ",_birthday VARCHAR(20)"+
+                ",_height VARCHAR(20)"+
+                ",_weight VARCHAR(20)"+
+                ",_hand VARCHAR(20))");
         ContentValues cv=new ContentValues();
         //cv.put("_id",1);
-        cv.put("_name","abc");
-        cv.put("_password","abc");
-        db.insert("TB2",null,cv);
+        cv.put("_name","123");
+        cv.put("_number","123");
+        cv.put("_gender","男");
+        cv.put("_birthday","2000/01/01");
+        cv.put("_height","180");
+        cv.put("_weight","60");
+        cv.put("_hand","右");
+        db.insert("TB1",null,cv);
         db.close();
     }
 

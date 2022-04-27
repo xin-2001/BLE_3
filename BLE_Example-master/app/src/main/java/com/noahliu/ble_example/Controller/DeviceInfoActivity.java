@@ -55,7 +55,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
     public static final String INTENT_KEY = "GET_DEVICE";
     private BluetoothLeService mBluetoothLeService;
     private ScannedData selectedDevice;
-    private TextView tvAddress, tvStatus, tvRespond,Text_now,Text_max,Text_avg;
+    private TextView tvAddress, tvStatus, tvRespond,Text_now,Text_max,Text_avg,Text_min;
     private ExpandableListAdapter expandableListAdapter;
     private boolean isLedOn = false;
     private float MAX,MIN,AVG,SUM,COUNT;
@@ -64,7 +64,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
     private boolean isRunning = false;
     private LineChart chart;
     private Thread thread;
-    private String AVGG,Maxx;
+    private String AVGG,Maxx,Minn;
 
     private String user_name;
 
@@ -81,7 +81,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
 
 
         MAX=0;
-        MIN=15;
+        MIN=100;
         AVG=0;
         SUM=0;
         COUNT=1;
@@ -92,8 +92,10 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
                 Intent i=new Intent(DeviceInfoActivity.this,Result_Activity.class);
                 i.putExtra("AVG",AVGG);
                 i.putExtra("MAX",Maxx);
+                i.putExtra("MIN",Minn);
                 i.putExtra("user_name",user_name);
                 startActivity(i);
+
             }
         });
 
@@ -136,6 +138,10 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         });
         thread.start();
     }
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }//禁止上一頁
 
     /**
      * 載入圖表
@@ -170,10 +176,11 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         YAxis y = chart.getAxisLeft();
         y.setTextColor(Color.GRAY);
         y.setDrawGridLines(true);
-        y.setAxisMaximum(20);//最高
+        y.setLabelCount(16, true);
+        y.setAxisMaximum(15);//最高
         y.setAxisMinimum(0);//最低0
         chart.getAxisRight().setEnabled(false);//右邊Y軸不可視
-        chart.setVisibleXRange(0, 20);//設置顯示範圍
+        chart.setVisibleXRange(0, 15);//設置顯示範圍
     }
 
     /**
@@ -274,6 +281,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
         Text_now=findViewById(R.id.now_text);
         Text_max=findViewById(R.id.max_text);
         Text_avg=findViewById(R.id.avg_text);
+        Text_min=findViewById(R.id.min_text);
         tvAddress.setText(selectedDevice.getAddress());
         //tvStatus.setText("未連線");
         tvAddress.setBackgroundColor(rgb(255,0,0));
@@ -357,6 +365,8 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
                 }
                 if(test<MIN){
                     MIN=test;
+                    Minn=stringData;
+                    Text_min.setText(stringData);
                 }
                 SUM=SUM+test;
                 avgg=(SUM/COUNT)*1000;
@@ -365,6 +375,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements ExpandableL
                 avgg=avgg/1000;
                 AVGG= String.valueOf(avgg);
                 Text_avg.setText(AVGG);
+
                 COUNT++;
                 addData(test);
             }

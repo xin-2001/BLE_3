@@ -19,6 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".Controller.Activity_History"
+            android:exported="true" />
+        <activity
+            android:name=".Controller.Activity_User"
+            android:exported="true" />
+        <activity
             android:name=".Controller.Login_Activity"
             android:exported="true" />
         <activity

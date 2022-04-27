@@ -12,7 +12,7 @@
         android:id="@+id/toolbar2"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#0055FF"
+        android:background="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,8 +24,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="裝置資訊"
-                android:textColor="@android:color/white"
+                android:text="←即時資訊"
+                android:textColor="@android:color/black"
                 android:textSize="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
                 android:text="結束"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +52,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="invisible">
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
@@ -76,7 +77,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="invisible">
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
@@ -100,22 +102,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text=""
-            android:textSize="18sp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp">
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/lineChart"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0" />
+            android:layout_height="500dp" /><!--500-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← 折線圖 →"
+            android:textSize="30sp"/>
 
     </LinearLayout>
 
@@ -123,74 +125,126 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+        android:orientation="vertical"
+        android:gravity="center">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
+            android:orientation="horizontal"
             android:gravity="center">
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="now:"
-                android:textSize="25sp"
-                android:layout_gravity="left"
-                android:layout_marginStart="8dp"/>
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_margin="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="now:"
+                    android:textSize="25sp"
+                    android:layout_gravity="left"
+                    android:layout_marginStart="8dp"/>
 
-            <TextView
-                android:id="@+id/now_text"
+                <TextView
+                    android:id="@+id/now_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00.00"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="80sp"
+                    android:padding="5dp"/><!--textSize="80sp"-->
+
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00.00"
-                android:textSize="80sp" />
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_margin="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="avg:"
+                    android:textSize="25sp"
+                    android:layout_gravity="left"
+                    android:layout_marginStart="8dp"/>
 
+                <TextView
+                    android:id="@+id/avg_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00.00"
+                    android:textSize="80sp"
+                    android:layout_marginLeft="20dp"
+                    android:padding="5dp"/><!--textSize="80sp"-->
+
+            </LinearLayout>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
+            android:orientation="horizontal"
             android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="max:"
-                android:textSize="25sp"
-                android:layout_gravity="left"
-                android:layout_marginStart="8dp"/>
 
-            <TextView
-                android:id="@+id/max_text"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00.00"
-                android:textSize="80sp" />
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_margin="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="max:"
+                    android:textSize="25sp"
+                    android:layout_gravity="left"
+                    android:layout_marginStart="8dp"/>
+
+                <TextView
+                    android:id="@+id/max_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00.00"
+                    android:textSize="80sp"
+                    android:layout_marginLeft="20dp"
+                    android:padding="5dp"/><!--textSize="80sp"-->
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#3F51B5"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginStart="8dp"
+                    android:text="min:"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/min_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00.00"
+                    android:textSize="80sp"
+                    android:layout_marginLeft="20dp"
+                    android:padding="5dp"/><!--textSize="80sp"-->
+
+            </LinearLayout>
+
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="avg:"
-                android:textSize="25sp"
-                android:layout_gravity="left"
-                android:layout_marginStart="8dp"/>
 
-            <TextView
-                android:id="@+id/avg_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00.00"
-                android:textSize="80sp" />
 
-        </LinearLayout>
+
     </LinearLayout>
 
     <ExpandableListView

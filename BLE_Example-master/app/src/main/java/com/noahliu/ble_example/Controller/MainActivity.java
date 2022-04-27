@@ -46,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
         /**取得欲連線之裝置後跳轉頁面*/
         mAdapter.OnItemClick(itemClick);
 
+        //---------------------------------------
+        /*Intent intent = new Intent(MainActivity.this, Login_Activity.class);
+        //intent.putExtra(DeviceInfoActivity.INTENT_KEY,selectedDevice);
+        //intent.putExtra("user_name","123");
+        startActivity(intent);
+*/
+        //---------------------------------------
     }
     /**權限相關認證*/
     private void checkPermission() {
@@ -102,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }//禁止上一頁
 
     @Override
     protected void onStart() {
@@ -200,7 +211,9 @@ public class MainActivity extends AppCompatActivity {
             //Intent intent = new Intent(MainActivity.this, DeviceInfoActivity.class);
             Intent intent = new Intent(MainActivity.this, Login_Activity.class);
             intent.putExtra(DeviceInfoActivity.INTENT_KEY,selectedDevice);
+            //intent.putExtra("user_name","123");
             startActivity(intent);
+            
         }
     };
 
